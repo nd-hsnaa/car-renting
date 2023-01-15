@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Review Car</title>
+    <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
+</head>
+<body>
+    <ul th:replace="page-layout :: employeeNavBar"></ul>
+
+<div class="container">
+    <h3>Please review car(s) below.</h3>
+
+    <div>
+        <table id="tablestyle">
+            <tr>
+                <th>Car name</th>
+                <th>Owner</th>
+                <th>Release Year</th>
+                <th>Edition</th>
+                <th></th>
+                <th></th>
+            </tr>
+            <tr>
+                <td th:text="${car.carName}"></td>
+                <td th:text="${car.owner}"></td>
+                <td th:text="${car.releaseYear}"></td>
+                <td th:text="${car.edition}"></td>
+                <td>
+                    <input type="submit" value="Approve">
+                </td>
+                <td>
+                    <input type="submit" value="Reject">
+                </td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+</body>
+</html>
