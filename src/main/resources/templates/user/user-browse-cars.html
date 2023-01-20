@@ -123,7 +123,7 @@
                 <td th:text="${car.edition}"></td>
                 <td th:text="${car.returnDate}"></td>
                 <td th:text="${car.endReservationDate}"></td>
-                <td th:if="${car.endReservationDate == null && userHasFine == false}">
+                <td th:if="${car.endReservationDate == null && userHasFine == false && car.carHasReviewed == true}">
                     <form>
                         <input class="table" type="submit" value="Reserve car">
                         <input th:name="reservedCarId" th:value="${car.carId}" type="hidden">
@@ -133,6 +133,9 @@
                         <input name="owner" th:if="${owner != null}" th:value="${owner}" type="hidden">
                         <input name="showAllCars" th:if="${showAllCars !=null}" type="hidden" value="Show all cars">
                     </form>
+                </td>
+                <td th:if="${car.carHasReviewed == false}">
+                    Not possible, car is under review.
                 </td>
                 <td th:if="${userHasFine}">
                     Not possible &#128549 , the reservation is blocked because you have a fine.

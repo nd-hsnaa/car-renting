@@ -20,6 +20,8 @@ public class Car {
     private LocalDate endReservationDate = null;
     private int timesExtended = 0;
     private boolean readyForPickUp = false;
+    //variable for new column carHasReviewed
+    private boolean carHasReviewed = false;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
@@ -34,12 +36,13 @@ public class Car {
 
     }
 
-    public Car(String carName, String owner, int releaseYear, int edition) {
+    public Car(String carName, String owner, int releaseYear, int edition, boolean carHasReviewed) {
         super();
         this.carName = carName;
         this.owner = owner;
         this.releaseYear = releaseYear;
         this.edition = edition;
+        this.carHasReviewed = carHasReviewed;
     }
 
     // class methods :
@@ -81,6 +84,15 @@ public class Car {
 
     public void setEdition(int edition) {
         this.edition = edition;
+    }
+
+    //added set and get method for variable isCarHasReviewed
+    public boolean isCarHasReviewed() {
+        return carHasReviewed;
+    }
+
+    public void setCarHasReviewed(boolean carHasReviewed) {
+        this.carHasReviewed = carHasReviewed;
     }
 
     public User getTheUser() {
