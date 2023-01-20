@@ -67,6 +67,11 @@ public class EmployeeController {
         return "employee/employee-review-cars.html";
     }
 
+    @GetMapping(value = "/reviewcars/reviewcar")
+    public String reviewCar() {
+        return "employee/employee-review-car.html";
+    }
+
     // @GetMapping(value = "/reviewcars/reviewcar")
     // public String reviewCar(@RequestParam Long carId, Model model) {
     //     Car car = carService.findById(carId);

@@ -6,36 +6,50 @@
     <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
 </head>
 <body>
-    <ul th:replace="page-layout :: employeeNavBar"></ul>
-
+<ul th:replace="page-layout :: employeeNavBar"></ul>
 <div class="container">
-    <h3>Please review car(s) below.</h3>
+    <h3>Car info</h3>
 
-    <div>
-        <table id="tablestyle">
-            <tr>
-                <th>Car name</th>
-                <th>Owner</th>
-                <th>Release Year</th>
-                <th>Edition</th>
-                <th></th>
-                <th></th>
-            </tr>
-            <tr>
-                <td th:text="${car.carName}"></td>
-                <td th:text="${car.owner}"></td>
-                <td th:text="${car.releaseYear}"></td>
-                <td th:text="${car.edition}"></td>
-                <td>
-                    <input type="submit" value="Approve">
-                </td>
-                <td>
-                    <input type="submit" value="Reject">
-                </td>
-            </tr>
+    <!-- change boolean value for carHasReviewed to true
+    added remarks -->
 
-        </table>
+    <!-- <div class="row">
+        <div class="col-50">
+            Car Name:
+        </div>
+        <div class="col-75">
+            <text th:text="${car.carName}">
+        </div>
     </div>
+
+    <div class="row">
+        <div class="col-50">
+            Owner:
+        </div>
+        <div class="col-75">
+            <text th:text="${car.owner}"/>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-50">
+            Release Year:
+        </div>
+        <div class="col-75">
+            <text th:text="${car.releaseYear}">
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-50">
+            Edition:
+        </div>
+        <div class="col-75">
+            <text th:text="${car.edition}">
+        </div>
+    </div> -->
+
 </div>
 </body>
 </html>
