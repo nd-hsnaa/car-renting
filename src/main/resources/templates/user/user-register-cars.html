@@ -11,15 +11,20 @@
     <h3>Register Your Car</h3>
     <p>You may register your car here</p>
 
-    <form action="/user/registercar" style="width: 100%;; height: 400px;" method="POST">
+    <form method="POST" th:action="@{/user/registercar/register}" th:object="${car}" style="width: 100%;; height: 400px;">
         <label for="carName">Car Name</label><br>
-        <input type="text" name="carName" id="carName" style="width: 80%;"><br>
+        <input id="carName" name="carName" required="required" th:field="${car.carName}" type="text" style="width: 80%;"><br>
+
+        <label for="owner">Owner</label><br>
+        <input id="owner" name="owner" required="required" th:field="${car.owner}" type="text" style="width: 80%;"><br>
 
         <label for="releaseYear">Release Year</label><br>
-        <input type="text" name="releaseYear" id="releaseYear" style="width: 80%;"><br>
+        <input id="releaseYear" name="releaseYear" required="required" th:field="${car.releaseYear}" type="number" style="width: 80%;"><br>
 
         <label for="edition">Edition</label><br>
-        <input type="text" name="edition" id="edition" style="width: 80%;"><br>
+        <input name="edition" required="required" th:field="${car.edition}" type="number" style="width: 80%;"><br>
+
+        <input type="hidden" id="carHasReviewed" name="carHasReviewed" th:field="${car.carHasReviewed}" value="false">
         
         <div style="margin-top: 1rem;">
             <!-- once click, will: -->
@@ -27,7 +32,6 @@
             <!-- if pass, add the car in "cars" table -->
             <!-- if fail, notify user -->
             <input type="submit" value="Register">
-            <input th:name="registerCarButton" type="hidden">
         </div>
     </form>
 </div>

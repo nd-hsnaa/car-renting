@@ -8,6 +8,7 @@ import ma.inpt.rentingCarApp.services.UserService;
 import ma.inpt.rentingCarApp.utils.DateTracker;
 import ma.inpt.rentingCarApp.utils.FineCalculator;
 import ma.inpt.rentingCarApp.utils.ListInStringConverter;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +50,19 @@ public class UserController {
 
     @GetMapping(value = "/registercar")
     public String registerCar(Model model) {
+        model.addAttribute("car", new Car());
         return "user/user-register-cars.html";
+    }
+
+    @PostMapping(value = "/registercar/register")
+    public String registerCar(Car car) {
+        carService.save(car);
+        return "redirect:/user/registercar/carregistered";
+    }
+
+    @GetMapping(value = "/registercar/carregistered")
+    public String carRegistered() {
+        return "user/user-car-registered.html";
     }
 
     @GetMapping(value = "/yourcars")
