@@ -163,4 +163,15 @@ public class CarService {
             usRepo.save(user);
         }
     }
+
+    //add method to return list of car that has not reviewed
+    public List<Car> getCarsNotReviewed() {
+        List<Car> cars = new ArrayList<>();
+        for (Car car : carRepository.findAll()) {
+            if (car.isCarHasReviewed() == false) {
+                cars.add(car);
+            }
+        }
+        return cars;
+    }
 }

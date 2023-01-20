@@ -58,10 +58,22 @@ public class EmployeeController {
         return "employee/employee-home.html";
     }
 
-    @GetMapping(value = "/reviewcar")
-    public String registerCar(Model model) {
-        return "employee/employee-review-car.html";
+    @GetMapping(value = "/reviewcars")
+    public String reviewCars(Model model) {
+        List<Car> unreviewedcars = new ArrayList<>();
+        unreviewedcars = carService.getCarsNotReviewed();
+        model.addAttribute("unreviewedcars", unreviewedcars);
+
+        return "employee/employee-review-cars.html";
     }
+
+    // @GetMapping(value = "/reviewcars/reviewcar")
+    // public String reviewCar(@RequestParam Long carId, Model model) {
+    //     Car car = carService.findById(carId);
+        
+    //     model.addAttribute("car", car);
+    //     return "employee/employee-review-car.html";
+    // }
 
     @GetMapping(value = "/users/showusers")
     public String showUsers(Model model,

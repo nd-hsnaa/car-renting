@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Review Cars</title>
+    <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
+</head>
+<body>
+    <ul th:replace="page-layout :: employeeNavBar"></ul>
+
+<div class="container">
+    <h3>Please review car(s) below.</h3>
+
+    <p th:if="${unreviewedcars.size() == 0}">You don't have any car to review.</p>
+
+    <table id="tablestyle" th:if="${unreviewedcars.size() > 0}">
+        <tr>
+            <th>Car name</th>
+            <th>Owner</th>
+            <th>Release Year</th>
+            <th>Edition</th>
+            <th>Review</th>
+        </tr>
+        <tr th:each="car : ${unreviewedcars}">
+            <td th:text="${car.carName}"></td>
+            <td th:text="${car.owner}"></td>
+            <td th:text="${car.releaseYear}"></td>
+            <td th:text="${car.edition}"></td>
+            <td>
+                <form method="GET" th:action="@{/employee/reviewcars/reviewcar}">
+                    <input class="table" type="submit" value="Review Car">
+                    <input name="carID" th:value="${car.getCarId()}" type="hidden">
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
