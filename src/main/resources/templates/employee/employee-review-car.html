@@ -7,58 +7,67 @@
 </head>
 <body>
 <ul th:replace="page-layout :: employeeNavBar"></ul>
+
 <div class="container">
-    <h3>Car info</h3>
+    <h3>Please review car information</h3>
 
-    <!-- change boolean value for carHasReviewed to true
-    added remarks -->
+    <form action="/employee/reviewcars/reviewcar/save" th:method="PUT" th:object="${car}">
+        <div class="row">
+            <div class="col-50">
+                <Label>Car ID: </Label>
+            </div>
+            <div class="col-75">
+                <label th:text="${car.carId}"></label>
+                <input th:field="${car.carId}" th:value="${car.carId}" type="hidden">
+            </div>
+        </div>
 
-    <div class="row">
-        <div class="col-50">
-            Car Name:
+        <div class="row">
+            <div class="col-50">
+                <Label>Car name: </Label>
+            </div>
+            <div class="col-75">
+                <input required="required" th:field="${car.carName}" th:value="${car.carName}" type="text"/>
+            </div>
         </div>
-        <div class="col-75">
-            <text th:text="${car.carName}">
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-50">
-            Owner:
+        <div class="row">
+            <div class="col-50">
+                <label>Owner:</label>
+            </div>
+            <div class="col-75">
+                <input required="required" th:field="${car.owner}" th:value="${car.owner}" type="text"/>
+            </div>
         </div>
-        <div class="col-75">
-            <text th:text="${car.owner}"/>
-        </div>
-    </div>
 
+        <div class="row">
+            <div class="col-50">
+                <label>Release year:</label>
+            </div>
+            <div class="col-75">
+                <input required="required" th:field="${car.releaseYear}" th:value="${car.releaseYear}" type="number"/>
+            </div>
+        </div>
 
-    <div class="row">
-        <div class="col-50">
-            Release Year:
+        <div class="row">
+            <div class="col-50">
+                <label>Edition:</label>
+            </div>
+            <div class="col-75">
+                <input required="required" th:field="${car.edition}" th:value="${car.edition}" type="number"/>
+            </div>
         </div>
-        <div class="col-75">
-            <text th:text="${car.releaseYear}">
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-50">
-            Edition:
-        </div>
-        <div class="col-75">
-            <text th:text="${car.edition}">
-        </div>
-    </div>
-
-    <!-- <div class="row">
-        <div class="col-50">
-            <form method="GET" action="/reviewcars/reviewcar/save">
+        <div class="row">
+            <div class="col-50">
+            </div>
+            <div class="col-75">
                 <input type="submit" value="Review">
-                <input name="unreviewedCarId" th:value="${car.getCarId()}" type="hidden">
-            </form>
+                <input name="_csrf" th:value="${_csrf.token}" type="hidden">
+                <input name="_method" th:value="PUT" type="hidden">
+            </div>
         </div>
-    </div> -->
-
+    </form>
 </div>
 </body>
 </html>

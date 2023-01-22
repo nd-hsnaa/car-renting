@@ -174,4 +174,10 @@ public class CarService {
         }
         return cars;
     }
+
+    //add method to review car
+    public void reviewCar(Car car) {
+        car.setCarHasReviewed(true);
+        carRepository.save(car);
+    }
 }

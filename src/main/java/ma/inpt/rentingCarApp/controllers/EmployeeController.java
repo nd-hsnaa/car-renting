@@ -75,15 +75,20 @@ public class EmployeeController {
         model.addAttribute("car", car);
         return "employee/employee-review-car.html";
     }
-
-
+    
     // class method to review the car
-    // @GetMapping(value = "/reviewcars/reviewcar/save")
-    // public String saveReviewedCar(@RequestParam Long unreviewedCarId) {
-    //     Car car = carService.findById(unreviewedCarId);
-    //     carService.reviewCar(car);
-    //     return "employee-review-car-saved.html";
-    // }
+    @PutMapping(value = "/reviewcars/reviewcar/save")
+    public String saveReviewedCar(Car car) {
+        carService.reviewCar(car);
+        carService.save(car);
+        return "redirect:/employee/reviewcars/reviewcar/carreviewed";
+    }
+
+    // class method to display page that shows the car has been reviewed
+    @GetMapping(value = "/reviewcars/reviewcar/carreviewed")
+    public String carReviewed() {
+        return "employee/employee-review-car-saved.html";
+    }
 
     @GetMapping(value = "/users/showusers")
     public String showUsers(Model model,

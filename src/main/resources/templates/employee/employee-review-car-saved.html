@@ -2,17 +2,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Car Registered</title>
+    <title>Car Reviewed</title>
     <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
 </head>
 <body>
-<ul th:replace="page-layout :: userNavBar"></ul>
+<ul th:replace="page-layout :: employeeNavBar"></ul>
 <div class="container">
-    <h3>Car Registered!</h3>
+    <h3>Car is reviewed!</h3>
     <br/>
     <div class="row">
         <div class="col-50">
-            <form th:action="@{/user/registercar}">
+            <form th:action="@{/employee/reviewcars}">
                 <input type="submit" value="Go back">
             </form>
         </div>
