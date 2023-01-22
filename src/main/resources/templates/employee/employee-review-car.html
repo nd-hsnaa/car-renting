@@ -13,7 +13,7 @@
     <!-- change boolean value for carHasReviewed to true
     added remarks -->
 
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-50">
             Car Name:
         </div>
@@ -47,6 +47,15 @@
         </div>
         <div class="col-75">
             <text th:text="${car.edition}">
+        </div>
+    </div>
+
+    <!-- <div class="row">
+        <div class="col-50">
+            <form method="GET" action="/reviewcars/reviewcar/save">
+                <input type="submit" value="Review">
+                <input name="unreviewedCarId" th:value="${car.getCarId()}" type="hidden">
+            </form>
         </div>
     </div> -->
 

@@ -21,15 +21,15 @@
             <th>Edition</th>
             <th>Review</th>
         </tr>
-        <tr th:each="car : ${unreviewedcars}">
-            <td th:text="${car.carName}"></td>
-            <td th:text="${car.owner}"></td>
-            <td th:text="${car.releaseYear}"></td>
-            <td th:text="${car.edition}"></td>
+        <tr th:each="unreviewedcar : ${unreviewedcars}">
+            <td th:text="${unreviewedcar.carName}"></td>
+            <td th:text="${unreviewedcar.owner}"></td>
+            <td th:text="${unreviewedcar.releaseYear}"></td>
+            <td th:text="${unreviewedcar.edition}"></td>
             <td>
                 <form method="GET" th:action="@{/employee/reviewcars/reviewcar}">
-                    <input class="table" type="submit" value="Review Car">
-                    <input name="carID" th:value="${car.getCarId()}" type="hidden">
+                    <input class="table" type="submit" value="Review Car"/>
+                    <input name="unreviewedCarId" th:value="${unreviewedcar.carId}" type="hidden">
                 </form>
             </td>
         </tr>

@@ -58,6 +58,7 @@ public class EmployeeController {
         return "employee/employee-home.html";
     }
 
+    // class method to display list of car that hasnt been reviewed
     @GetMapping(value = "/reviewcars")
     public String reviewCars(Model model) {
         List<Car> unreviewedcars = new ArrayList<>();
@@ -67,17 +68,21 @@ public class EmployeeController {
         return "employee/employee-review-cars.html";
     }
 
+    // class method to display informations of selected car to review
     @GetMapping(value = "/reviewcars/reviewcar")
-    public String reviewCar() {
+    public String reviewCar(@RequestParam Long unreviewedCarId, Model model) {
+        Car car = carService.findById(unreviewedCarId);
+        model.addAttribute("car", car);
         return "employee/employee-review-car.html";
     }
 
-    // @GetMapping(value = "/reviewcars/reviewcar")
-    // public String reviewCar(@RequestParam Long carId, Model model) {
-    //     Car car = carService.findById(carId);
-        
-    //     model.addAttribute("car", car);
-    //     return "employee/employee-review-car.html";
+
+    // class method to review the car
+    // @GetMapping(value = "/reviewcars/reviewcar/save")
+    // public String saveReviewedCar(@RequestParam Long unreviewedCarId) {
+    //     Car car = carService.findById(unreviewedCarId);
+    //     carService.reviewCar(car);
+    //     return "employee-review-car-saved.html";
     // }
 
     @GetMapping(value = "/users/showusers")
