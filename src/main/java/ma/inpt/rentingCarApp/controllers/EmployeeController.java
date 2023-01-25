@@ -41,7 +41,12 @@ public class EmployeeController {
     final UserRatingService userRating;
 
     // class constructors :
+
     public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder, NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter, UserRatingService userRating) {
+
+    public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder,
+            NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter) {
+
         this.userService = userService;
         this.carService = carService;
         this.currentUserFinder = currentUserFinder;
@@ -60,17 +65,51 @@ public class EmployeeController {
         return "employee/employee-home.html";
     }
 
+    // class method to display list of car that hasnt been reviewed
+    @GetMapping(value = "/reviewcars")
+    public String reviewCars(Model model) {
+        List<Car> unreviewedcars = new ArrayList<>();
+        unreviewedcars = carService.getCarsNotReviewed();
+        model.addAttribute("unreviewedcars", unreviewedcars);
+
+        return "employee/employee-review-cars.html";
+    }
+
+    // class method to display informations of selected car to review
+    @GetMapping(value = "/reviewcars/reviewcar")
+    public String reviewCar(@RequestParam Long unreviewedCarId, Model model) {
+        Car car = carService.findById(unreviewedCarId);
+        model.addAttribute("car", car);
+        return "employee/employee-review-car.html";
+    }
+    
+    // class method to review the car
+    @PutMapping(value = "/reviewcars/reviewcar/save")
+    public String saveReviewedCar(Car car) {
+        carService.reviewCar(car);
+        carService.save(car);
+        return "redirect:/employee/reviewcars/reviewcar/carreviewed";
+    }
+
+    // class method to display page that shows the car has been reviewed
+    @GetMapping(value = "/reviewcars/reviewcar/carreviewed")
+    public String carReviewed() {
+        return "employee/employee-review-car-saved.html";
+    }
+
     @GetMapping(value = "/users/showusers")
     public String showUsers(Model model,
-                            @RequestParam(required = false) String firstName,
-                            @RequestParam(required = false) String lastName,
-                            @RequestParam(required = false) String showAllUsers) {
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String showAllUsers) {
 
         List<User> users = new ArrayList<>();
         LinkedHashMap<User, BigDecimal> usersAndFines;
 
-        if (showAllUsers != null) users = userService.findAll();
-        else if (firstName != null || lastName != null) users = userService.userSearcher(firstName, lastName);
+        if (showAllUsers != null)
+            users = userService.findAll();
+        else if (firstName != null || lastName != null)
+            users = userService.userSearcher(firstName, lastName);
 
         usersAndFines = fineCalculator.getAllUsersWithFines(users);
         model.addAttribute("usersWithFines", usersAndFines);
@@ -79,8 +118,8 @@ public class EmployeeController {
 
     @GetMapping(value = "/users/showuserinfo")
     public String showUserInfo(@RequestParam Long userId,
-                               @RequestParam BigDecimal fine,
-                               Model model) {
+            @RequestParam BigDecimal fine,
+            Model model) {
         User user = userService.findById(userId);
         model.addAttribute("carsInUse", fineCalculator.getCarsWithFines(user.getCars()));
         model.addAttribute("fine", fine);
@@ -95,13 +134,15 @@ public class EmployeeController {
 
     @GetMapping(value = "/cars/showcars")
     public String showCars(Model model,
-                           @RequestParam(required = false) String carName,
-                           @RequestParam(required = false) String owner,
-                           @RequestParam(required = false) String showAllCars) {
+            @RequestParam(required = false) String carName,
+            @RequestParam(required = false) String owner,
+            @RequestParam(required = false) String showAllCars) {
 
         List<Car> cars;
-        if (showAllCars == null) cars = carService.searchCars(carName, owner);
-        else cars = carService.findAll();
+        if (showAllCars == null)
+            cars = carService.searchCars(carName, owner);
+        else
+            cars = carService.findAll();
 
         model.addAttribute("cars", cars);
         return "employee/employee-show-cars.html";
@@ -151,10 +192,12 @@ public class EmployeeController {
 
     @PutMapping(value = "/cars/savecarchange")
     public String updatecarinfo(@RequestParam(required = false) String removeCurrentUser,
-                                @RequestParam(required = false) String removeReservation,
-                                Car car) {
-        if (removeCurrentUser != null) carService.removeCurrentUserOfCar(car);
-        if (removeReservation != null) carService.removeReservation(car);
+            @RequestParam(required = false) String removeReservation,
+            Car car) {
+        if (removeCurrentUser != null)
+            carService.removeCurrentUserOfCar(car);
+        if (removeReservation != null)
+            carService.removeReservation(car);
         carService.save(car);
         return "redirect:/employee/cars/carinfochanged";
     }
@@ -166,14 +209,14 @@ public class EmployeeController {
 
     @GetMapping(value = "/orders")
     public String orders(@RequestParam(required = false) String firstName,
-                         @RequestParam(required = false) String lastName,
-                         @RequestParam(required = false) Long userId,
-                         @RequestParam(required = false) String carName,
-                         @RequestParam(required = false) String owner,
-                         @RequestParam(required = false) Long selectedCarId,
-                         @RequestParam(required = false) Long removeCarId,
-                         @RequestParam(required = false) String selectedCarIdsInString,
-                         Model model) {
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String carName,
+            @RequestParam(required = false) String owner,
+            @RequestParam(required = false) Long selectedCarId,
+            @RequestParam(required = false) Long removeCarId,
+            @RequestParam(required = false) String selectedCarIdsInString,
+            Model model) {
 
         List<User> users = userService.userSearcher(firstName, lastName);
         LinkedHashMap<User, BigDecimal> usersAndFines = fineCalculator.getAllUsersWithFines(users);
@@ -181,13 +224,16 @@ public class EmployeeController {
         List<Car> searchedCars = carService.searchCars(carName, owner);
 
         User user = null;
-        if (userId != null) user = userService.findById(userId);
+        if (userId != null)
+            user = userService.findById(userId);
 
         Set<Long> selectedCarIds = new LinkedHashSet<>();
         if (selectedCarIdsInString != null)
             selectedCarIds = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
-        if (selectedCarId != null) selectedCarIds.add(selectedCarId);
-        if (removeCarId != null) selectedCarIds.remove(removeCarId);
+        if (selectedCarId != null)
+            selectedCarIds.add(selectedCarId);
+        if (removeCarId != null)
+            selectedCarIds.remove(removeCarId);
 
         List<Car> selectedCarObjects = carService.convertIdsCollectionToCarsList(selectedCarIds);
 
@@ -205,8 +251,8 @@ public class EmployeeController {
 
     @GetMapping(value = "/confirmorder")
     public String confirmOrder(@RequestParam String selectedCarIdsInString,
-                               @RequestParam Long userId,
-                               Model model) {
+            @RequestParam Long userId,
+            Model model) {
         Set<Long> selectedCarIds = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
         List<Car> selectedCars = carService.convertIdsCollectionToCarsList(selectedCarIds);
         User user = userService.findById(userId);
@@ -220,7 +266,7 @@ public class EmployeeController {
 
     @PutMapping(value = "/saveorder")
     public String saveOrder(@RequestParam Long userId,
-                            @RequestParam String selectedCarIdsInString) {
+            @RequestParam String selectedCarIdsInString) {
         Set<Long> selectedCarIds = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
         User user = userService.findById(userId);
         carService.saveCarOrder(selectedCarIds, user);
@@ -232,31 +278,35 @@ public class EmployeeController {
         return "employee/employee-order-saved.html";
     }
 
-
     @GetMapping(value = "/returnedcars")
     public String returnedCars(@RequestParam(required = false) Long userId,
-                               @RequestParam(required = false) String firstName,
-                               @RequestParam(required = false) String lastName,
-                               @RequestParam(required = false) Long selectedCarId,
-                               @RequestParam(required = false) Long removeCarId,
-                               @RequestParam(required = false) String selectedCarIdsInString,
-                               Model model) {
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) Long selectedCarId,
+            @RequestParam(required = false) Long removeCarId,
+            @RequestParam(required = false) String selectedCarIdsInString,
+            Model model) {
 
         List<User> users = userService.userSearcher(firstName, lastName);
 
         User user = null;
-        if (userId != null) user = userService.findById(userId);
+        if (userId != null)
+            user = userService.findById(userId);
 
         LinkedHashMap<Car, BigDecimal> carsInUseByUser = null;
-        if (user != null) carsInUseByUser = fineCalculator.getCarsWithFines(user.getCars());
+        if (user != null)
+            carsInUseByUser = fineCalculator.getCarsWithFines(user.getCars());
 
         Set<Long> selectedCarIds = new LinkedHashSet<>();
         if (selectedCarIdsInString != null)
             selectedCarIds = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
-        if (removeCarId != null) selectedCarIds.remove(removeCarId);
-        if (selectedCarId != null) selectedCarIds.add(selectedCarId);
+        if (removeCarId != null)
+            selectedCarIds.remove(removeCarId);
+        if (selectedCarId != null)
+            selectedCarIds.add(selectedCarId);
 
-        LinkedHashMap<Car, BigDecimal> selectedCars = fineCalculator.getCarsWithFines(carService.convertIdsCollectionToCarsList(selectedCarIds));
+        LinkedHashMap<Car, BigDecimal> selectedCars = fineCalculator
+                .getCarsWithFines(carService.convertIdsCollectionToCarsList(selectedCarIds));
         BigDecimal fineToPay = fineCalculator.getTotalFine(carService.convertIdsCollectionToCarsList(selectedCarIds));
 
         model.addAttribute("selectedCarIds", selectedCarIds);
@@ -273,9 +323,9 @@ public class EmployeeController {
 
     @GetMapping(value = "/confirmreturnedcars")
     public String confirmReturnedCars(@RequestParam Long userId,
-                                      @RequestParam BigDecimal fineToPay,
-                                      @RequestParam String selectedCarIdsInString,
-                                      Model model) {
+            @RequestParam BigDecimal fineToPay,
+            @RequestParam String selectedCarIdsInString,
+            Model model) {
         Set<Long> selectedCarIds = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
         List<Car> selectedCars = carService.convertIdsCollectionToCarsList(selectedCarIds);
 
@@ -285,7 +335,6 @@ public class EmployeeController {
         model.addAttribute("fineToPay", fineToPay);
         return "employee/employee-confirm-returned-cars.html";
     }
-
 
     @PutMapping(value = "/savereturnedcars")
     public String saveReturnedCars(@RequestParam String selectedCarIdsInString) {
@@ -311,8 +360,8 @@ public class EmployeeController {
 
     @PutMapping(value = "/setreadyforpickup")
     public String setReadyForPickup(@RequestParam Long carId,
-                                    @RequestParam Long userId,
-                                    Model model) {
+            @RequestParam Long userId,
+            Model model) {
         model.addAttribute("user", userService.findById(userId));
         model.addAttribute("car", carService.findById(carId));
         return "employee/employee-reservation-ready-for-pick-up.html";
@@ -320,11 +369,12 @@ public class EmployeeController {
 
     @PutMapping(value = "/updatecarreservation")
     public String updateCarReservation(@RequestParam Long carId,
-                                       @RequestParam Long userId) {
+            @RequestParam Long userId) {
 
         Car car = carService.findById(carId);
-        Notification notification = new Notification(LocalDate.now(), car.getEndReservationDate(), "Your reservation is ready for pick-up until " +
-                car.getEndReservationDate() + ". " + car.getCarName() + " by " + car.getOwner() + ".");
+        Notification notification = new Notification(LocalDate.now(), car.getEndReservationDate(),
+                "Your reservation is ready for pick-up until " +
+                        car.getEndReservationDate() + ". " + car.getCarName() + " by " + car.getOwner() + ".");
 
         notification.setValidUntilDate(car.getEndReservationDate());
         notification.setNotificationReceiver(userService.findById(userId));

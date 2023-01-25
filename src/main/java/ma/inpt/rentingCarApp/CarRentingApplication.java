@@ -39,7 +39,7 @@ public class CarRentingApplication {
         // to run the application
         SpringApplication.run(CarRentingApplication.class, args);
     }
-
+rating-car-husna
     // @Bean
     // CommandLineRunner runner() {
     //     return args -> {
@@ -102,6 +102,7 @@ public class CarRentingApplication {
             // Car car21 = new Car("Megane : Renault", "Manal Riad", 2006, 3);
             // Car car22 = new Car("Leon : Seat", "Amine Meftah", 2015, 1);
             // Car car23 = new Car("Picanto : Kia", "Abdellah Chadid", 2001, 2);
+
             // Car car24 = new Car("Micra : Nissan", "Meryem Fadil", 2017, 3);
             // Car car25 = new Car("500 : Fiat", "Marouane Naji", 2016, 1);
             // Car car26 = new Car("X5 : BMW", "Omar Bahri", 2009, 1);
@@ -125,6 +126,8 @@ public class CarRentingApplication {
             // carService.save(car8);
             // carService.save(car9);
             // carService.save(car10);
+
+
             // carService.save(car11);
             // carService.save(car12);
             // carService.save(car13);
@@ -151,22 +154,29 @@ public class CarRentingApplication {
             // carService.save(car34);
             // carService.save(car35);
 
-            // car10.setTheUser(user3);
-            // car10.setReturnDate(LocalDate.of(2021, 5, 23));
+
+            
+
+            car10.setTheUser(user3);
+            car10.setReturnDate(LocalDate.of(2021, 5, 23));
+
 
             // car34.setTheUser(user12);
             // car34.setReturnDate(LocalDate.of(2021, 12, 28));
 
-            // car1.setTheUser(user3);
-            // car1.setReturnDate(LocalDate.of(2021, 5, 05));
 
-            // user3.setCars(Arrays.asList(car10, car1));
 
-            // carService.save(car1);
-            // carService.save(car10);
-            // userService.save(user3);
+            car1.setTheUser(user3);
+            car1.setReturnDate(LocalDate.of(2021, 5, 05));
 
-        //     midAppRef.midnightApplicationRefresher();
-        // };
-    // }
+            user3.setCars(Arrays.asList(car10, car1));
+
+            carService.save(car1);
+            carService.save(car10);
+            userService.save(user3);
+
+            midAppRef.midnightApplicationRefresher();
+        };
+    }
+
 }
