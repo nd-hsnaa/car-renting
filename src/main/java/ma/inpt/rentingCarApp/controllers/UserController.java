@@ -8,6 +8,7 @@ import ma.inpt.rentingCarApp.services.UserService;
 import ma.inpt.rentingCarApp.utils.DateTracker;
 import ma.inpt.rentingCarApp.utils.FineCalculator;
 import ma.inpt.rentingCarApp.utils.ListInStringConverter;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,8 @@ public class UserController {
     final ListInStringConverter listConverter;
 
     // class constructor :
-    public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder, FineCalculator fineCalculator, DateTracker dateTracker, ListInStringConverter listConverter) {
+    public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder,
+            FineCalculator fineCalculator, DateTracker dateTracker, ListInStringConverter listConverter) {
         this.usService = usService;
         this.carService = carService;
         this.currentUserFinder = currentUserFinder;
@@ -46,6 +48,23 @@ public class UserController {
         return "user/user-home.html";
     }
 
+    @GetMapping(value = "/registercar")
+    public String registerCar(Model model) {
+        model.addAttribute("car", new Car());
+        return "user/user-register-cars.html";
+    }
+
+    @PostMapping(value = "/registercar/register")
+    public String registerCar(Car car) {
+        carService.save(car);
+        return "redirect:/user/registercar/carregistered";
+    }
+
+    @GetMapping(value = "/registercar/carregistered")
+    public String carRegistered() {
+        return "user/user-car-registered.html";
+    }
+
     @GetMapping(value = "/yourcars")
     public String yourCars(Model model) {
         User currentUser = currentUserFinder.getCurrentUser();
@@ -57,21 +76,23 @@ public class UserController {
 
     @PutMapping(value = "/yourcars/extend")
     public String extendRequest(@RequestParam BigDecimal fineAmount,
-                                @RequestParam Long carId,
-                                @RequestParam int weeksToExtend) {
+            @RequestParam Long carId,
+            @RequestParam int weeksToExtend) {
 
         Car car = carService.findById(carId);
         int maximumWeeksToExtend = 3;
         int extensionsLeft = maximumWeeksToExtend - car.getTimesExtended();
         long daysTooLate = dateTracker.daysTooLate(car.getReturnDate());
 
-        if (car.getTimesExtended() < maximumWeeksToExtend && fineAmount.compareTo(BigDecimal.valueOf(0)) == 0 && car.getReservedByUser() == null) {
+        if (car.getTimesExtended() < maximumWeeksToExtend && fineAmount.compareTo(BigDecimal.valueOf(0)) == 0
+                && car.getReservedByUser() == null) {
             car.setReturnDate(car.getReturnDate().plusDays(7L * weeksToExtend));
             car.setTimesExtended(car.getTimesExtended() + weeksToExtend);
             carService.save(car);
             return "redirect:/user/yourcars/carextended";
 
-        } else if (fineAmount.compareTo(BigDecimal.valueOf(0)) > 0 && daysTooLate <= (extensionsLeft * 7L) && car.getReservedByUser() == null) {
+        } else if (fineAmount.compareTo(BigDecimal.valueOf(0)) > 0 && daysTooLate <= (extensionsLeft * 7L)
+                && car.getReservedByUser() == null) {
             return "redirect:/user/yourcars/payfine/" + carId;
 
         } else {
@@ -96,9 +117,9 @@ public class UserController {
 
     @PostMapping(value = "/yourcars/dopayment")
     public String doPayment(@RequestParam int weeksToExtend,
-                            @RequestParam BigDecimal fineAmount,
-                            @RequestParam long carId,
-                            Model model) {
+            @RequestParam BigDecimal fineAmount,
+            @RequestParam long carId,
+            Model model) {
         Car currentCar = carService.findById(carId);
         model.addAttribute("fineAmount", fineAmount);
         model.addAttribute("weeksToExtend", weeksToExtend);
@@ -118,24 +139,28 @@ public class UserController {
 
     @GetMapping(value = "/browsecars")
     public String browseCars(@RequestParam(required = false) String carNme,
-                             @RequestParam(required = false) String owner,
-                             @RequestParam(required = false) String showAllCars,
-                             @RequestParam(required = false) Long reservedCarId,
-                             @RequestParam(required = false) Long removeCarId,
-                             @RequestParam(required = false) String reservedCarIdsInString,
-                             Model model) {
+            @RequestParam(required = false) String owner,
+            @RequestParam(required = false) String showAllCars,
+            @RequestParam(required = false) Long reservedCarId,
+            @RequestParam(required = false) Long removeCarId,
+            @RequestParam(required = false) String reservedCarIdsInString,
+            Model model) {
 
         Set<Long> reservedCarIds = new LinkedHashSet<>();
         if (reservedCarIdsInString != null)
             reservedCarIds = listConverter.convertListInStringToSetInLong(reservedCarIdsInString);
-        if (removeCarId != null) reservedCarIds.remove(removeCarId);
-        if (reservedCarId != null) reservedCarIds.add(reservedCarId);
+        if (removeCarId != null)
+            reservedCarIds.remove(removeCarId);
+        if (reservedCarId != null)
+            reservedCarIds.add(reservedCarId);
 
         Map<Car, String> listedCarReservations = dateTracker.listedCarReservations(reservedCarIds);
 
         List<Car> cars;
-        if (showAllCars == null) cars = carService.searchCars(carNme, owner);
-        else cars = carService.findAll();
+        if (showAllCars == null)
+            cars = carService.searchCars(carNme, owner);
+        else
+            cars = carService.findAll();
 
         model.addAttribute("userHasFine", fineCalculator.hasFineOrNot(currentUserFinder.getCurrentUser()));
         model.addAttribute("listedCarReservations", listedCarReservations);
@@ -152,11 +177,10 @@ public class UserController {
         return "user/user-FAQ.html";
     }
 
-
     @PutMapping(value = "/browsecars/payreservation")
     public String payReservation(@RequestParam String reservedCarIdsInString,
-                                 @RequestParam Double amountToPay,
-                                 Model model) {
+            @RequestParam Double amountToPay,
+            Model model) {
 
         model.addAttribute("amountToPay", amountToPay);
         model.addAttribute("reservedCarIdsInString", reservedCarIdsInString);

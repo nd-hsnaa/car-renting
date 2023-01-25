@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Car Registered</title>
+    <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
+</head>
+<body>
+<ul th:replace="page-layout :: userNavBar"></ul>
+<div class="container">
+    <h3>Car Registered!</h3>
+    <br/>
+    <div class="row">
+        <div class="col-50">
+            <form th:action="@{/user/registercar}">
+                <input type="submit" value="Go back">
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
