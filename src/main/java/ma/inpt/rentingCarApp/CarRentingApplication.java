@@ -23,26 +23,26 @@ public class CarRentingApplication {
     // final UserService userService;
     // final NotificationService notificationService;
     // final BCryptPasswordEncoder pwEncoder;
-    // final MidnightApplicationRefresh midAppRef;
+    final MidnightApplicationRefresh midAppRef;
 
     // class constructor :
-    // public CarRentingApplication(CarService carService, UserService userService, NotificationService notificationService, BCryptPasswordEncoder pwEncoder, MidnightApplicationRefresh midAppRef) {
+    public CarRentingApplication(CarService carService, UserService userService, NotificationService notificationService, BCryptPasswordEncoder pwEncoder, MidnightApplicationRefresh midAppRef) {
     //     this.carService = carService;
     //     this.userService = userService;
     //     this.notificationService = notificationService;
     //     this.pwEncoder = pwEncoder;
-    //     this.midAppRef = midAppRef;
-    // }
+        this.midAppRef = midAppRef;
+    }
 
     // class methods :
     public static void main(String[] args) {
         // to run the application
         SpringApplication.run(CarRentingApplication.class, args);
     }
-rating-car-husna
+
     // @Bean
-    // CommandLineRunner runner() {
-    //     return args -> {
+    CommandLineRunner runner() {
+        return args -> {
 
             // User user1 = new User("labriji", pwEncoder.encode("labriji"), "labrijisaad@gmail.com", "Saad", "Labriji", "el omrane 1, rue 1, lot 6", "07-62436500", "el-hajeb");
             // user1.setRole("ROLE_ADMIN");
@@ -157,8 +157,8 @@ rating-car-husna
 
             
 
-            car10.setTheUser(user3);
-            car10.setReturnDate(LocalDate.of(2021, 5, 23));
+            // car10.setTheUser(user3);
+            // car10.setReturnDate(LocalDate.of(2021, 5, 23));
 
 
             // car34.setTheUser(user12);
@@ -166,17 +166,16 @@ rating-car-husna
 
 
 
-            car1.setTheUser(user3);
-            car1.setReturnDate(LocalDate.of(2021, 5, 05));
+            // car1.setTheUser(user3);
+            // car1.setReturnDate(LocalDate.of(2021, 5, 05));
 
-            user3.setCars(Arrays.asList(car10, car1));
+            // user3.setCars(Arrays.asList(car10, car1));
 
-            carService.save(car1);
-            carService.save(car10);
-            userService.save(user3);
+            // carService.save(car1);
+            // carService.save(car10);
+            // userService.save(user3);
 
             midAppRef.midnightApplicationRefresher();
         };
     }
-
 }

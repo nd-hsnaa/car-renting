@@ -42,10 +42,9 @@ public class EmployeeController {
 
     // class constructors :
 
-    public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder, NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter, UserRatingService userRating) {
 
     public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder,
-            NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter) {
+            NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter, UserRatingService userRating) {
 
         this.userService = userService;
         this.carService = carService;

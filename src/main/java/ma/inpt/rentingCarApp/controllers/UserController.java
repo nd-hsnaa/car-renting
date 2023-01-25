@@ -33,11 +33,8 @@ public class UserController {
 
     // class constructor :
 
-    public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder, FineCalculator fineCalculator, 
-    DateTracker dateTracker, ListInStringConverter listConverter, UserRatingService userRatingService ) {
-
     public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder,
-            FineCalculator fineCalculator, DateTracker dateTracker, ListInStringConverter listConverter) {
+            FineCalculator fineCalculator, DateTracker dateTracker, ListInStringConverter listConverter, UserRatingService userRatingService) {
 
         this.usService = usService;
         this.carService = carService;
