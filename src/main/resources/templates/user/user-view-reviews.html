@@ -2,72 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>Browse Cars</title>
+    <title>View Reviews</title>
     <link rel="stylesheet" th:href="@{/CSS/account-layout.css}" type="text/css">
 </head>
 <body>
 <ul th:replace="page-layout :: userNavBar"></ul>
 
 <div class="container">
-    <h3>Make reservation</h3>
+    <h3>View Reviews</h3>
+<!-- th:if="${listedCarReservations.size() == 0}" -->
+    <p >Select the cars to view available reviews and comment.</p>
 
-    <p th:if="${listedCarReservations.size() == 0}">Select the cars to make a reservation.</p>
+    <h1 th:if="${reviewCarName != NULL}" th:text="${reviewCarName}"></h1>
 
-    <table id="tablestyle" th:if="${listedCarReservations.size() != 0}">
+    <table id="tablestyle" th:if="${reviewCarName != NULL}">
         <tr>
-            <th>Car name</th>
-            <th>Owner</th>
-            <th>Release Year</th>
-            <th>Edition</th>
-            <th>Reservation Period</th>
-            <th>Remove From List</th>
+            <th>Reviewer</th>
+            <th>Comment</th>
+            <th>Rating</th>
         </tr>
-        <tr th:each="resCar : ${listedCarReservations}">
-            <td th:text="${resCar.key.carName}"></td>
-            <td th:text="${resCar.key.owner}"></td>
-            <td th:text="${resCar.key.releaseYear}"></td>
-            <td th:text="${resCar.key.edition}"></td>
-            <td th:text="${resCar.value}"></td>
-            <td style="width: 100px">
-                <form action="/user/browsecars">
-                    <input class="table" style="background-color: red" type="submit" value="Remove">
-                    <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden">
-                    <input th:name="removeCarId" th:value="${resCar.key.carId}" type="hidden">
-                    <input name="carName" th:if="${carName != null}" th:value="${carName}" type="hidden">
-                    <input name="owner" th:if="${owner != null}" th:value="${owner}" type="hidden">
-                    <input name="showAllCars" th:if="${showAllCars !=null}" type="hidden" value="Show all cars">
-                </form>
-            </td>
+        <tr th:each="listedCarReview : ${listedCarReviews}">
+            <td th:text="${listedCarReview.get(0)}"></td>
+            <td th:text="${listedCarReview.get(1)}"></td>
+            <td th:text="${listedCarReview.get(2)}"></td>
+           
         </tr>
     </table>
-
-    <div class="row" th:if="${listedCarReservations.size() > 0}">
-
-        <p>Please note that reserving a car doesn't mean you can pick it up right away. You will receive a notification
-            on
-            this account when an employee of the customer service has put it aside for you. It could also happen that
-            the current
-            user of a car doesn't
-            return the car in time, which will result in an expired reservation. In that case your reservation will be
-            canceled.</p>
-
-        <div class="col-50">
-            <form th:action="@{/user/browsecars/payreservation}" th:method="PUT">
-                <input type="submit" value="Reserve cars">
-                <input th:name="_method" th:value="PUT" type="hidden">
-                <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden">
-                <input th:name="amountToPay" th:value="${listedCarReservations.size()}" type="hidden">
-            </form>
-        </div>
-
-        <div class="col-50">
-            <p>Total order:
-                <b>
-                    <text th:text="${'$' + listedCarReservations.size() * 100 + ''}"></text>
-                </b>
-            </p>
-        </div>
-    </div>
 
 </div>
 
@@ -76,7 +36,7 @@
     <h3>Cars</h3>
 
     <div class="row">
-        <form action="/user/browsecars" method="GET">
+        <form action="/user/viewreviews" method="GET">
             <div class="col-25">
                 <Label for="carName">Car name</Label>
             </div>
@@ -92,14 +52,14 @@
             </div>
             <div>
                 <input type="submit" value="Search">
-                <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden">
+                <!-- <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden"> -->
             </div>
         </form>
 
-        <form action="/user/browsecars" method="GET">
+        <form action="/user/viewreviews" method="GET">
             <div>
                 <input name="showAllCars" style="margin-left: 20px" type="submit" value="Show all cars">
-                <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden">
+                <!-- <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden"> -->
             </div>
         </form>
     </div>
@@ -116,7 +76,7 @@
                 <th>End Reservation Date</th>
                 <th>Average Rating</th>
                 <th>Total Review(s)</th>
-                <th style="width: 100px">Reserve</th>
+                <th style="width: 100px">View All Reviews</th>
             </tr>
             <tr th:each="car : ${cars}">
                 <td th:text="${car.carName}"></td>
@@ -125,7 +85,6 @@
                 <td th:text="${car.edition}"></td>
                 <td th:text="${car.returnDate}"></td>
                 <td th:text="${car.endReservationDate}"></td>
-
                 <td th:if="${car.rating == 0}"> Not Available</td>
                 <td th:if="${car.rating == 1}"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="18px" width="18px"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M316.9 18C311.6 7 300.4 0 288.1 0s-23.4 7-28.8 18L195 150.3 51.4 171.5c-12 1.8-22 10.2-25.7 21.7s-.7 24.2 7.9 32.7L137.8 329 113.2 474.7c-2 12 3 24.2 12.9 31.3s23 8 33.8 2.3l128.3-68.5 128.3 68.5c10.8 5.7 23.9 4.9 33.8-2.3s14.9-19.3 12.9-31.3L438.5 329 542.7 225.9c8.6-8.5 11.7-21.2 7.9-32.7s-13.7-19.9-25.7-21.7L381.2 150.3 316.9 18z"/></svg> 
                     <br> (Terrible)</td>
@@ -149,29 +108,17 @@
                     <br> (Excellent)</td>
                 <td th:if="${car.totalReview > 0}" th:text="${car.totalReview}"></td>
                 <td th:if="${car.totalReview == 0}"></td>
-                <td th:if="${car.endReservationDate == null && userHasFine == false}">
-
-                <td th:if="${car.endReservationDate == null && userHasFine == false && car.carHasReviewed == true}">
-
+                <td >
                     <form>
-                        <input class="table" type="submit" value="Reserve car">
-                        <input th:name="reservedCarId" th:value="${car.carId}" type="hidden">
-                        <input th:name="reservedCarIdsInString" th:value="${reservedCarIds}" type="hidden">
-
+                        <input class="table" type="submit" value="View Reviews">
+                        <input th:name="reviewCarId" th:value="${car.carId}" type="hidden">
+                        <!-- <input th:name="review" th:value="${reservedCarIds}" type="hidden">
                         <input name="carName" th:if="${carName != null}" th:value="${carName}" type="hidden">
                         <input name="owner" th:if="${owner != null}" th:value="${owner}" type="hidden">
-                        <input name="showAllCars" th:if="${showAllCars !=null}" type="hidden" value="Show all cars">
+                        <input name="showAllCars" th:if="${showAllCars !=null}" type="hidden" value="Show all cars"> -->
                     </form>
                 </td>
-                <td th:if="${car.carHasReviewed == false}">
-                    Not possible, car is under review.
-                </td>
-                <td th:if="${userHasFine}">
-                    Not possible &#128549 , the reservation is blocked because you have a fine.
-                </td>
-                <td th:if="${car.endReservationDate != null && userHasFine == false}">
-                    Not possible, car is already reserved.
-                </td>
+                
             </tr>
 
         </table>

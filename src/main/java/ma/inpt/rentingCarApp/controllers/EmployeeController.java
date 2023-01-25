@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ma.inpt.rentingCarApp.services.CarService;
 import ma.inpt.rentingCarApp.services.NotificationService;
+import ma.inpt.rentingCarApp.services.UserRatingService;
 import ma.inpt.rentingCarApp.services.UserService;
 
 @Controller
@@ -37,16 +38,22 @@ public class EmployeeController {
     final NotificationService notifyService;
     final FineCalculator fineCalculator;
     final ListInStringConverter listConverter;
+    final UserRatingService userRating;
 
     // class constructors :
+
+    public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder, NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter, UserRatingService userRating) {
+
     public EmployeeController(UserService userService, CarService carService, CurrentUserFinder currentUserFinder,
             NotificationService notifService, FineCalculator fineCalculator, ListInStringConverter listConverter) {
+
         this.userService = userService;
         this.carService = carService;
         this.currentUserFinder = currentUserFinder;
         this.notifyService = notifService;
         this.fineCalculator = fineCalculator;
         this.listConverter = listConverter;
+        this.userRating = userRating;
     }
 
     // class methods :
@@ -334,6 +341,8 @@ public class EmployeeController {
         Set<Long> returnedCars = listConverter.convertListInStringToSetInLong(selectedCarIdsInString);
         List<Car> cars = carService.convertIdsCollectionToCarsList(returnedCars);
         carService.removeCurrentUserOfMultipleCars(cars);
+        // userRating.addReturnedCars(cars);
+
         return "redirect:/employee/carsreturned";
     }
 

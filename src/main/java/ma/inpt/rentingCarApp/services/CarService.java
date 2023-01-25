@@ -16,11 +16,13 @@ public class CarService {
     // class attributes :
     final CarRepository carRepository;
     final UserRepository usRepo;
+    final UserRatingService userRating;
 
     // class constructor :
-    public CarService(CarRepository carRepository, UserRepository usRepo) {
+    public CarService(CarRepository carRepository, UserRepository usRepo, UserRatingService userRating) {
         this.carRepository = carRepository;
         this.usRepo = usRepo;
+        this.userRating = userRating;
     }
 
     // class methods :
@@ -38,6 +40,16 @@ public class CarService {
 
     public Car findById(long carId) {
         return carRepository.findById(carId).get();
+    }
+
+    public List<Car> findWithReview() {
+        List<Car> cars = new ArrayList<Car>();
+        for (Car car : carRepository.findAll()) {
+            if (car.getRating() != 0) {
+                cars.add(car);
+            }
+        }
+        return cars ;
     }
 
     public List<Car> searchCars(String carName, String owner) {
@@ -124,6 +136,7 @@ public class CarService {
         for (int i = 0; i < currentUser.getCars().size(); i++) {
             if (currentUser.getCars().get(i).getCarId() == car.getCarId()) {
                 currentUser.getCars().remove(i);
+                userRating.addReturnedCar(car);
                 break;
             }
         }

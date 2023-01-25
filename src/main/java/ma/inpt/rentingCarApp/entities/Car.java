@@ -20,8 +20,13 @@ public class Car {
     private LocalDate endReservationDate = null;
     private int timesExtended = 0;
     private boolean readyForPickUp = false;
+
+    private int rating = 0; // one to many
+    private int totalReview = 0;
+
     //variable for new column carHasReviewed
     private boolean carHasReviewed = false;
+
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
             CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
@@ -149,6 +154,22 @@ public class Car {
 
     public boolean getReadyForPickUp() {
         return readyForPickUp;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+
+    public int getTotalReview() {
+        return totalReview;
+    }
+
+    public void setTotalReview(int totalReview) {
+        this.totalReview = totalReview;
     }
 
 }

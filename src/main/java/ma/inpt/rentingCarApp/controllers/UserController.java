@@ -2,8 +2,10 @@ package ma.inpt.rentingCarApp.controllers;
 
 import ma.inpt.rentingCarApp.entities.Car;
 import ma.inpt.rentingCarApp.entities.User;
+import ma.inpt.rentingCarApp.entities.UserRating;
 import ma.inpt.rentingCarApp.security.CurrentUserFinder;
 import ma.inpt.rentingCarApp.services.CarService;
+import ma.inpt.rentingCarApp.services.UserRatingService;
 import ma.inpt.rentingCarApp.services.UserService;
 import ma.inpt.rentingCarApp.utils.DateTracker;
 import ma.inpt.rentingCarApp.utils.FineCalculator;
@@ -27,16 +29,23 @@ public class UserController {
     final FineCalculator fineCalculator;
     final DateTracker dateTracker;
     final ListInStringConverter listConverter;
+    final UserRatingService userRatingService;
 
     // class constructor :
+
+    public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder, FineCalculator fineCalculator, 
+    DateTracker dateTracker, ListInStringConverter listConverter, UserRatingService userRatingService ) {
+
     public UserController(UserService usService, CarService carService, CurrentUserFinder currentUserFinder,
             FineCalculator fineCalculator, DateTracker dateTracker, ListInStringConverter listConverter) {
+
         this.usService = usService;
         this.carService = carService;
         this.currentUserFinder = currentUserFinder;
         this.fineCalculator = fineCalculator;
         this.dateTracker = dateTracker;
         this.listConverter = listConverter;
+        this.userRatingService = userRatingService;
     }
 
     // class methods :
@@ -70,9 +79,29 @@ public class UserController {
         User currentUser = currentUserFinder.getCurrentUser();
         List<Car> cars = currentUser.getCars();
         LinkedHashMap<Car, BigDecimal> carsWithFines = fineCalculator.getCarsWithFines(cars);
+        List<Car> returnedCars = userRatingService.getReturnedCar(currentUser);
         model.addAttribute("cars", carsWithFines);
+        model.addAttribute("returnedcars", returnedCars);
+        model.addAttribute("user", currentUser);
         return "user/user-your-cars.html";
     }
+
+    @PutMapping(value = "/yourcars/rating")
+    public String storeRating(
+        @RequestParam int ratingValue, 
+        @RequestParam String comment, 
+        @RequestParam boolean done,
+        @RequestParam Long userId,
+        @RequestParam Long carId ) {
+            userRatingService.updateRating(userId, carId, ratingValue, comment, done);            
+        return "redirect:/user/yourcars/donerating";
+    }
+
+    @GetMapping(value = "/yourcars/donerating")
+    public String doneRating() {
+        return "user/user-done-rating.html";
+    }
+
 
     @PutMapping(value = "/yourcars/extend")
     public String extendRequest(@RequestParam BigDecimal fineAmount,
@@ -162,6 +191,8 @@ public class UserController {
         else
             cars = carService.findAll();
 
+        // Map<Car, Integer> allRatings = userRatingService.getAllAverageRating(cars);
+
         model.addAttribute("userHasFine", fineCalculator.hasFineOrNot(currentUserFinder.getCurrentUser()));
         model.addAttribute("listedCarReservations", listedCarReservations);
         model.addAttribute("reservedCarIds", reservedCarIds);
@@ -169,6 +200,7 @@ public class UserController {
         model.addAttribute("owner", owner);
         model.addAttribute("showAllCars", showAllCars);
         model.addAttribute("cars", cars);
+        // model.addAttribute("allRatings", allRatings);
         return "user/user-browse-cars.html";
     }
 
@@ -200,4 +232,59 @@ public class UserController {
         model.addAttribute("reservedCars", currentUser.getReversedCars());
         return "user/user-your-reservations.html";
     }
+
+    @GetMapping(value = "/returnedcars")
+    public String returnedCars(Model model) {
+        User currentUser = currentUserFinder.getCurrentUser();
+        model.addAttribute("returnedCars", currentUser.getReversedCars());
+        return "user/user-returned-cars.html";
+    }
+
+    @GetMapping(value = "/viewreviews")
+    public String viewReviews(
+        @RequestParam(required = false) String carNme,
+        @RequestParam(required = false) String owner,
+        @RequestParam(required = false) String showAllCars,
+        @RequestParam(required = false) Long reviewCarId,
+        Model model) {
+
+            List<UserRating> reviewCar = null;
+            String reviewCarName = null;
+            List<List<String>> listedCarReviews = new ArrayList<>();
+
+        if (reviewCarId != null) {
+            reviewCar = userRatingService.getReviewByCarId(reviewCarId); 
+            reviewCarName = ((Car)carService.findById(reviewCar.get(0).getCarId())).getCarName();
+            // Set<Long> reservedCarIds = new LinkedHashSet<>();
+            // if (reservedCarIdsInString != null)
+            // reservedCarIds = listConverter.convertListInStringToSetInLong(reservedCarIdsInString);
+            // if (removeCarId != null) reservedCarIds.remove(removeCarId);
+            // if (reservedCarId != null) reservedCarIds.add(reservedCarId);
+    
+            listedCarReviews = userRatingService.getReviewCarList(reviewCar);
+        }
+        
+        // for (List<String> strings : listedCarReview) {
+        //     String string = strings.get(0);
+        // }
+
+        List<Car> cars;
+        if (showAllCars == null) cars = carService.searchCars(carNme, owner);
+        else cars = carService.findWithReview();
+        
+        
+
+        model.addAttribute("carName", carNme);
+        model.addAttribute("owner", owner);
+        model.addAttribute("showAllCars", showAllCars);
+        model.addAttribute("cars", cars);
+        model.addAttribute("reviewCar", reviewCar);
+        model.addAttribute("reviewCarName", reviewCarName);
+        model.addAttribute("listedCarReviews", listedCarReviews);
+        // model.addAttribute("allRatings", allRatings);
+        return "user/user-view-reviews.html";
+    }
+
+    //rate car
+    //
 }

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class User {
 
     // class attributes :
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)  
     private long userId;
     @Column(name = "username")
     private String userName;
@@ -30,8 +30,13 @@ public class User {
     private String city;
     private String phoneNumber;
 
+    // one to many rating
+
     @OneToMany(mappedBy = "reservedByUser")
     public List<Car> reservedCars;
+
+    // @OneToMany(mappedBy = "returnedByUser")
+    // public List<Car> returnedCars;
 
     @OneToMany(mappedBy = "theUser")
     private List<Car> cars;
@@ -169,4 +174,12 @@ public class User {
     public void setNotifications(List<Notification> notifications) {
         this.notifications = notifications;
     }
+
+    // public List<Car> getReturnedCars() {
+    //     return returnedCars;
+    // }
+
+    // public void setReturnedCars(List<Car> returnedCars) {
+    //     this.returnedCars = returnedCars;
+    // }
 }
